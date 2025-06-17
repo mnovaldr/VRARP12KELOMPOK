@@ -96,6 +96,11 @@ Cetak atau tampilkan file `marker.patt` menggunakan pattern generator (misalnya 
 - [AR.js (AR dengan marker)](https://github.com/AR-js-org/AR.js)
 - GLB 3D Model (via [donmccurdy/aframe-extras](https://github.com/donmccurdy/aframe-extras) jika menggunakan loader tambahan)
 
+## 👥 Anggota Kelompok
+
+1. Muhammad Noval Dwi Ramadhani [23201188]
+2. Alif Bangga Paramudika [23201157]
+
 ## 📄 Lisensi
 
 Proyek ini bersifat **edukatif** dan **non-komersial**. Semua model dan suara digunakan untuk kepentingan pembelajaran. Pastikan penggunaan aset 3D memiliki lisensi yang sesuai jika akan dipublikasikan secara luas.
