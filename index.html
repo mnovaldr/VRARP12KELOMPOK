@@ -5,6 +5,7 @@
   <title>AR Evolusi Deinonychus</title>
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 
   <style>
     body { margin: 0; overflow: hidden; font-family: sans-serif; }
@@ -50,7 +51,7 @@
 
   <a-marker preset="custom" type="pattern" url="assets/marker/marker.patt">
     <!-- Deinonychus -->
-    <a-entity id="deinonychus" gltf-model="#deinonychusModel" position="0 0 0" scale="1 1 1" visible="true" animation-mixer></a-entity>
+    <a-entity id="deinonychus" gltf-model="#deinonychusModel" position="0 0 0" scale="1 1 1" visible="true" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear"></a-entity>
 
     <!-- Kalkun -->
     <a-entity id="kalkun" gltf-model="#kalkunModel" position="0 0 0" scale="0.6 0.6 0.6" visible="false" animation-mixer></a-entity>
