@@ -8,7 +8,12 @@
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 
   <style>
-    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
     #buttons {
       position: absolute;
       bottom: 10px;
@@ -16,8 +21,14 @@
       transform: translateX(-50%);
       z-index: 10;
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
+      max-width: 90%;
+      box-sizing: border-box;
+      padding: 0 10px;
     }
+
     button {
       background-color: #007bff;
       color: white;
@@ -26,10 +37,22 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      flex: 1 1 auto;
+      min-width: 100px;
+      text-align: center;
     }
+
     button:hover {
       background-color: #0056b3;
+    }
+
+    @media (max-width: 480px) {
+      button {
+        font-size: 12px;
+        padding: 8px 10px;
+        min-width: 90px;
+      }
     }
   </style>
 </head>
@@ -38,7 +61,6 @@
 <div id="buttons">
   <button onclick="gantiModel()">🔄 Ganti Model</button>
   <button onclick="togglePenjelasan()">📜 Info</button>
-  <button onclick="putarSuara()">🔊 Suara</button>
 </div>
 
 <a-scene embedded arjs>
@@ -49,14 +71,11 @@
     <audio id="suaraKalkun" src="assets/sound/WildTurkeyCall.mp3"></audio>
   </a-assets>
 
-  <a-marker preset="custom" type="pattern" url="assets/marker/marker.patt">
-    <!-- Deinonychus -->
-    <a-entity id="deinonychus" gltf-model="#deinonychusModel" position="0 0 0" scale="1 1 1" visible="true" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear"></a-entity>
-
-    <!-- Kalkun -->
+  <a-marker preset="custom" type="pattern" url="assets/marker/marker.patt" id="marker">
+    <a-entity id="deinonychus" gltf-model="#deinonychusModel" position="0 0 0" scale="1 1 1" visible="true"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear"></a-entity>
     <a-entity id="kalkun" gltf-model="#kalkunModel" position="0 0 0" scale="0.6 0.6 0.6" visible="false" animation-mixer></a-entity>
 
-    <!-- Informasi -->
     <a-plane id="infoBox" position="0 1.3 0.01" width="3.5" height="0.6" color="#ffffff" opacity="0.6" visible="false"></a-plane>
     <a-text id="infoText" value="" position="0 1.3 0.02" align="center" color="#000" width="3.2" visible="false"></a-text>
   </a-marker>
@@ -71,6 +90,10 @@
   const kalkun = document.getElementById('kalkun');
   const infoText = document.getElementById('infoText');
   const infoBox = document.getElementById('infoBox');
+  const marker = document.getElementById('marker');
+
+  const suaraDeinonychus = document.getElementById('suaraDeinonychus');
+  const suaraKalkun = document.getElementById('suaraKalkun');
 
   function gantiModel() {
     if (modelAktif === 'deinonychus') {
@@ -82,6 +105,7 @@
       deinonychus.setAttribute('visible', true);
       modelAktif = 'deinonychus';
     }
+    putarSuara();
   }
 
   function togglePenjelasan() {
@@ -93,6 +117,27 @@
     infoText.setAttribute('visible', true);
     infoBox.setAttribute('visible', true);
 
+    // Stop suara hewan
+    suaraDeinonychus.pause();
+    suaraKalkun.pause();
+
+    // Text-to-Speech
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(info);
+      utterance.lang = 'id-ID';
+
+      // Lanjutkan suara hewan setelah pembacaan selesai
+      utterance.onend = () => {
+        putarSuara();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Browser tidak mendukung text-to-speech.");
+    }
+
+    // Sembunyikan penjelasan setelah beberapa detik
     setTimeout(() => {
       infoText.setAttribute('visible', false);
       infoBox.setAttribute('visible', false);
@@ -100,17 +145,21 @@
   }
 
   function putarSuara() {
-    document.getElementById('suaraDeinonychus').pause();
-    document.getElementById('suaraKalkun').pause();
-    document.getElementById('suaraDeinonychus').currentTime = 0;
-    document.getElementById('suaraKalkun').currentTime = 0;
+    suaraDeinonychus.pause();
+    suaraKalkun.pause();
+    suaraDeinonychus.currentTime = 0;
+    suaraKalkun.currentTime = 0;
 
     if (modelAktif === 'deinonychus') {
-      document.getElementById('suaraDeinonychus').play();
+      suaraDeinonychus.play();
     } else {
-      document.getElementById('suaraKalkun').play();
+      suaraKalkun.play();
     }
   }
+
+  marker.addEventListener('markerFound', () => {
+    putarSuara();
+  });
 </script>
 
 </body>
